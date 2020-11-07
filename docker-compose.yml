@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  scrape_colors:
+  scrapy:
     build: ./scrape_colors
     volumes:
       - ./scrape_colors:/usr/src/app/

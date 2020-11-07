@@ -14,7 +14,7 @@ class ColorsSpider(CrawlSpider):
         Rule(
             LinkExtractor(allow=r"popular(\?page=)*\d*"),
             callback="parse_colorion",
-            follow=False,
+            follow=True,
         ),
         Rule(
             LinkExtractor(allow="archive"), callback="parse_foundcolor", follow=False,
@@ -35,7 +35,15 @@ class ColorsSpider(CrawlSpider):
                     colors.append(j)
             if colors:
                 item.append(
-                    {"id": self.count_palette, "colors": colors, "foundcolor": 1}
+                    {
+                        "id": self.count_palette,
+                        "color1": colors[0],
+                        "color2": colors[1],
+                        "color3": colors[2],
+                        "color4": None,
+                        "color5": None,
+                        "foundcolor": 1,
+                    }
                 )
                 colors = []
         return item
@@ -54,8 +62,45 @@ class ColorsSpider(CrawlSpider):
                 if j:
                     colors.append(j)
             if colors:
-                item.append(
-                    {"id": self.count_palette, "colors": colors, "foundcolor": 0}
-                )
-                colors = []
+                try:
+                    if colors[4]:
+                        item.append(
+                            {
+                                "id": self.count_palette,
+                                "color1": colors[0],
+                                "color2": colors[1],
+                                "color3": colors[2],
+                                "color4": colors[3],
+                                "color5": colors[4],
+                                "foundcolor": 0,
+                            }
+                        )
+                except:
+                    try:
+                        if colors[3]:
+                            item.append(
+                                {
+                                    "id": self.count_palette,
+                                    "color1": colors[0],
+                                    "color2": colors[1],
+                                    "color3": colors[2],
+                                    "color4": colors[3],
+                                    "color5": None,
+                                    "foundcolor": 0,
+                                }
+                            )
+                    except:
+                        item.append(
+                            {
+                                "id": self.count_palette,
+                                "color1": colors[0],
+                                "color2": colors[1],
+                                "color3": colors[2],
+                                "color4": None,
+                                "color5": None,
+                                "foundcolor": 0,
+                            }
+                        )
+                finally:
+                    colors = []
         return item
